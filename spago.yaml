@@ -1,0 +1,15 @@
+package:
+  name: glamour
+  dependencies:
+    - prelude
+    - functions
+    - either
+  build:
+    strict: true
+    pedantic_packages: true
+
+workspace:
+  package_set:
+    registry: 49.0.0
+  backend:
+    cmd: echo "uses psgo backend"
