@@ -1,54 +1,52 @@
--- | A PureScript wrapper for `github.com/charmbracelet/glamour` — render
--- | Markdown into ANSI-styled terminal text.
+-- | Markdown, rendered for the terminal.
+-- |
+-- |     Glamour.render _ { width = 60 } "# Hello\n\nSome *emphasis*."
 module Glamour
-  ( Style(..)
-  , styleString
+  ( Options
+  , Theme(..)
   , render
-  , renderWithWidth
   ) where
 
-import Data.Either (Either)
-import Data.Function.Uncurried (Fn2, Fn3, runFn2, runFn3)
+import Prelude
 
-data Style
-  = Auto
-  | Ascii
-  | Dark
-  | Light
-  | Dracula
-  | TokyoNight
-  | Pink
-  | NoTTY
+import Data.Either (Either(..))
 
-foreign import styleAuto :: String
-foreign import styleAscii :: String
-foreign import styleDark :: String
-foreign import styleLight :: String
-foreign import styleDracula :: String
-foreign import styleTokyoNight :: String
-foreign import stylePink :: String
-foreign import styleNoTTY :: String
+type Options =
+  { theme :: Theme
+  -- | Wrap lines at this many cells; `0` doesn't wrap.
+  , width :: Int
+  -- | Turn `:smile:` into 😄.
+  , emoji :: Boolean
+  -- | Keep the line breaks of paragraphs.
+  , preserveNewLines :: Boolean
+  }
 
-styleString :: Style -> String
-styleString = case _ of
-  Auto -> styleAuto
-  Ascii -> styleAscii
-  Dark -> styleDark
-  Light -> styleLight
-  Dracula -> styleDracula
-  TokyoNight -> styleTokyoNight
-  Pink -> stylePink
-  NoTTY -> styleNoTTY
+data Theme = Dark | Light | Dracula | TokyoNight | Pink | Ascii | NoColors
 
-foreign import renderImpl :: Fn2 String String (Either String String)
+derive instance Eq Theme
 
--- | Render Markdown to styled terminal text. `Left` carries glamour's
--- | error message; `Right` carries the rendered string.
-render :: Style -> String -> Either String String
-render style input = runFn2 renderImpl input (styleString style)
+-- | Render Markdown, or say why it can't.
+render :: (Options -> Options) -> String -> Either String String
+render configure markdown = do
+  let options = configure { theme: Dark, width: 80, emoji: false, preserveNewLines: false }
+  renderImpl Left Right (themeName options.theme) options.width options.emoji options.preserveNewLines markdown
+  where
+  themeName = case _ of
+    Dark -> "dark"
+    Light -> "light"
+    Dracula -> "dracula"
+    TokyoNight -> "tokyo-night"
+    Pink -> "pink"
+    Ascii -> "ascii"
+    NoColors -> "notty"
 
-foreign import renderWithWidthImpl :: Fn3 String String Int (Either String String)
-
--- | Same as `render` but wraps lines at the given width.
-renderWithWidth :: Style -> Int -> String -> Either String String
-renderWithWidth style width input = runFn3 renderWithWidthImpl input (styleString style) width
+foreign import renderImpl
+  :: forall r
+   . (String -> r)
+  -> (String -> r)
+  -> String
+  -> Int
+  -> Boolean
+  -> Boolean
+  -> String
+  -> r

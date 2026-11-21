@@ -1,15 +1,16 @@
 package:
   name: glamour
+  description: Glamour Markdown rendering for the terminal, for PureScript compiled to Go with Iris
   dependencies:
-    - prelude
-    - functions
     - either
-  build:
-    strict: true
-    pedantic_packages: true
-
+    - prelude
+  test:
+    main: Test.Main
+    dependencies:
+      - aff
+      - effect
+      - spec
+      - strings
 workspace:
-  package_set:
-    registry: 49.0.0
-  backend:
-    cmd: echo "uses psgo backend"
+  packageSet:
+    registry: 73.2.0
