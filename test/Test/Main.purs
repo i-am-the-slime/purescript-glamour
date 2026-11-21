@@ -26,6 +26,10 @@ main = launchAff_ do
 
 specs :: Spec Unit
 specs = describe "Glamour" do
+  it "renders the README example" do
+    rendered (Glamour.render _ { theme = Dracula, width = 60 } "# Hello\n\nSome *emphasis* and `code`.") \text ->
+      text `shouldSatisfy` contains (Pattern "Hello")
+
   it "renders headings, emphasis and lists" do
     rendered (Glamour.render _ { theme = NoColors } "# Groceries\n\n- *Bread*\n- Butter") \text -> do
       text `shouldSatisfy` contains (Pattern "# Groceries")
