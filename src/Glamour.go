@@ -2,8 +2,8 @@ package ffi
 
 import "charm.land/glamour/v2"
 
-func RenderImpl[R any](failed func(string) R, rendered func(string) R, theme string, width int32, emoji bool, preserveNewLines bool, markdown string) R {
-	options := []glamour.TermRendererOption{glamour.WithStandardStyle(theme), glamour.WithWordWrap(int(width))}
+func RenderImpl[R any](failed func(string) R, rendered func(string) R, theme string, width int, emoji bool, preserveNewLines bool, markdown string) R {
+	options := []glamour.TermRendererOption{glamour.WithStandardStyle(theme), glamour.WithWordWrap(width)}
 	if emoji {
 		options = append(options, glamour.WithEmoji())
 	}
