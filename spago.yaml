@@ -1,6 +1,6 @@
 package:
   name: glamour
-  description: Glamour Markdown rendering for the terminal, for PureScript compiled to Go with Iris
+  description: Glamour Markdown rendering for the terminal, for PureScript compiled to Go with googoo
   dependencies:
     - either
     - prelude
@@ -13,4 +13,4 @@ package:
       - strings
 workspace:
   packageSet:
-    registry: 73.2.0
+    url: https://raw.githubusercontent.com/rowtype-yoga/purescript-go-package-sets/go-0.1.18-20261126/packages.json
